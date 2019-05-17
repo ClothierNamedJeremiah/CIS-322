@@ -1,0 +1,15 @@
+/*
+ * memos.css: 
+ *    Styles for 'Memos' go in this file 
+ */
+
+/* Nothing yet */
+
+.lyrics {
+    margin-left: 3em;
+    font-style: italic;
+}
+
+.attribution  {
+    font-size: smaller;
+}

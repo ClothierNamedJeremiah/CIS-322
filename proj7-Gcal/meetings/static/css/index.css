@@ -1,0 +1,8 @@
+p.calendar_title {
+	text-indent: 10px;
+}
+.column {
+    float: left;
+    width: 33.33%;
+    padding: 10px;
+}

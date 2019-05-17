@@ -1,0 +1,152 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html> <head>
+
+<!-- Bootstrap requires the following three meta tags to appear first -->
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+<title>Vocabulary Anagram</title>
+
+<!-- Javascript and Cascading Style Sheets (css) libraries -->
+<!-- mostly from content delivery networks                 -->
+
+<!-- jquery; CDN load is usually quick because it's likely cached -->
+<script type="text/javascript"
+     src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js">
+</script>
+
+<!-- Bootstrap stylesheet let's us have a 'responsive' layout; -->
+<!-- 12 column grid rearranges itself for smaller screens or windows. -->
+
+<!-- per http://getbootstrap.com/getting-started/  -->
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet"
+ href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+ integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
+  crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script
+ src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+ integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+ crossorigin="anonymous">
+</script>
+
+<!-- Our own css file.  Note how we can link directly here and not -->
+<!-- write any routing code in the Flask application. -->
+<link rel="stylesheet" href="/static/jumble.css" />
+
+</head>
+
+<body>
+<div class="container">
+
+  <div class="row">
+    <div class="col-xs-6 text-center">
+      <h1>Words</h1>
+    </div>
+  </div>
+<!-- Vocabularly words layed out in 6 columns;
+  -- bootstrap may collapse to fewer columns and
+  -- more rows if the window is narrow.
+  -->
+<div class="row">
+  {% for word in g.vocab %}
+    <div class="col-xs-2 text-center"> {{ word }} </div>
+    {% if loop.index is divisibleby 3 %}
+    </div> <!-- row -->
+    <div class="row">
+    {% endif %}
+  {% endfor %}
+</div> <!-- row -->
+
+<br />
+
+<div class="row">
+  <div class="col-xs-6 text-center">
+   Use letters from
+  </div>
+  </div><div class="row">
+  <div class="col-xs-6 text-center lead">
+    <strong>{{ session.jumble }}</strong>
+  </div>
+  </div><div class="row">
+  <div class="col-xs-6 text-center">
+    to spell {{session.target_count}} words from the list.
+  </div> <!-- col -->
+</div> <!-- row -->
+<br />
+<div class="row">
+  <div class="col-xs-6 text-center">
+  <form id="entry" action="/_check">
+    <label for="attempt">Word:</label>
+    <input id="attempt" name="attempt" type="text" width="15"
+      autocomplete="off"  autofocus />
+  </form>
+</div></div>
+
+<br />
+
+<p id = "spelt"></p> <!-- displays words that have already been spelled -->
+<p id = "msg"></p> <!-- displays response messages from json (generated based on what's in the #attempt field) -->
+
+<script>
+// Suppress normal form submission
+$("#entry").submit( function(event) {
+   event.preventDefault();
+  });
+
+// On each keystroke, ask the server whether the current 
+// word is long enough. 
+//
+// We use 'keyup' because the form value
+// is updated before that event is generated.
+// keypress is triggered before the input field has been
+// updated.  Be aware that we'll see non-character keys like
+// shift and control, so make sure whatever you do with the
+// event does not depend on it being a letter.
+
+$("#attempt").keyup(function(event) {
+  var txt = $("#attempt").val();  // Current content of the input field
+  var keycode = event.which;      // They key that just went up
+  var letter = String.fromCharCode(keycode);
+
+   // That letter might not be a letter ... it could be the
+   // the backspace key, or even the shift key, because 'keyup'
+   // catches all kinds of keys.  (Also, the difference between
+   // upper and lower case comes from state of shift key + key code,
+   // so ignoring the shift key we get only the upper case letters.
+
+  if (! "ABCDEFGHIJKLMNOPQRSTUVWXYZ".includes(letter)) { return }
+
+    $.getJSON( "/_check", { text: txt , letr: letter , spelt: $("#spelt").html()},
+      function(data) {
+        have_letter = data.result.have_letter; // true if the letter is in our LetterBag, false otherwise
+        valid_word = data.result.valid_word; // true if the word spelt is in WORDS
+        is_playing = data.result.is_playing; // true if they still need to spell more words, false otherwise
+        msg = data.result.msg; // message response to be diplayed in #message(generated based on most recently pressed key)
+        console.log("Have Letter: ",have_letter," Valid Word: ",valid_word, " Is_Playing: ",is_playing,msg);
+        if (!is_playing) {
+          // They've won
+          window.location.replace("/success"); 
+          return
+        }
+        if (!have_letter) {
+          temp = txt.substring(0,txt.length-1) // delete the most recent "key" in #attempt, because it's not in the LetterBag
+          $("#attempt").val(temp);
+        }
+        else {
+          if (valid_word) {
+            var temp = $("#spelt").html(); 
+            $("#spelt").html(temp + txt + "\n"); // add the most recently spelled word to #spelt
+            $("#attempt").val(""); // set #attempt to be empty
+          }
+        }
+        $("#msg").html(msg) // display most recent message
+    });
+});
+</script>
+ </div> <!-- container -->
+</body> </html>

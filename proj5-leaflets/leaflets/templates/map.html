@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+    <head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8"/> 
+		<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+		<title>Barbers &amp; Hair Salons</title>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"> </script>
+		<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBDkEll6QVmoQTx2bkolEvcpxku6CAVtpA&callback=initMap"> </script>
+		<link rel = "stylesheet" type = "text/css" href="static/gmap.css">
+    </head>
+  <body>
+    <div id="map"></div>
+    <script type="text/javascript">
+    	var ROOT = {{ request.script_root|tojson|safe }};
+		var EXTENSION = ROOT + "/_full_map";
+
+    	// global variables
+    	var map;
+    	var markers = []
+    	var CENTER = {lat: 44.060644, lng: -123.1925903}
+      /**
+       * The CenterControl adds a control to the map that recenters the map on
+       * Chicago.
+       * This constructor takes the control DIV as an argument.
+       * @constructor
+       */
+      function CenterControl(controlDiv, map) {
+
+        // Set CSS for the control border.
+        var controlUI = document.createElement('div');
+        controlUI.style.backgroundColor = '#fff';
+        controlUI.style.border = '2px solid #fff';
+        controlUI.style.borderRadius = '3px';
+        controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+        controlUI.style.cursor = 'pointer';
+        controlUI.style.marginBottom = '22px';
+        controlUI.style.textAlign = 'center';
+        controlUI.title = 'Click to recenter the map';
+        controlDiv.appendChild(controlUI);
+
+        // Set CSS for the control interior.
+        var controlText = document.createElement('div');
+        controlText.style.color = 'rgb(25,25,25)';
+        controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
+        controlText.style.fontSize = '16px';
+        controlText.style.lineHeight = '38px';
+        controlText.style.paddingLeft = '5px';
+        controlText.style.paddingRight = '5px';
+        controlText.innerHTML = 'Center Map';
+        controlUI.appendChild(controlText);
+
+        // Setup the click event listeners: simply set the map to Chicago.
+        controlUI.addEventListener('click', function() {
+          map.setCenter(CENTER);
+        });
+
+      }
+        function initMap() {
+        	$.getJSON(EXTENSION, {}, function(data) {
+        		markers = data.result.markers
+	        	console.log(markers);
+	            var geocoder = new google.maps.Geocoder;
+	            var infoWindow = new google.maps.InfoWindow;
+                // Build Map centralized at Eugene, OR
+                var cntr = {
+                    lat: markers[0][1],
+                    lng: markers[0][2]
+                };
+                eugene = cntr;
+                map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: 16,
+                    center: cntr
+                });
+	             // Try HTML5 geolocation: https://developers.google.com/maps/documentation/javascript/geolocation
+	            if (navigator.geolocation) {
+	            	navigator.geolocation.getCurrentPosition(function(position) {
+	            		markers.push["user_loc",position.coords.latitutde,position.coords.longitude];
+	            });
+                    // User has disabled location services: allow user to click, create marker and center map around that location
+                    if (markers[0][0] != "user_loc") {
+                        var listener1 = google.maps.event.addListener(map, 'click', function handler(e) {
+                            google.maps.event.removeListener(listener1);
+                            placeMarker(e.latLng,map);
+                        });
+                        function placeMarker(location,map) {
+                            var marker = new google.maps.Marker({
+                                position: location,
+                                map: map,
+                                icon: "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
+                            });
+                            map.panTo(marker.position);
+                            console.log(marker.position.lat());
+                            CENTER = {lat:marker.position.lat(), lng:marker.position.lng()};
+                            map.setCenter(new google.maps.LatLng(CENTER));
+                        } // end of placeMarker
+                    }
+	            } // end of outer-if
+                buildMap(map,geocoder,markers);
+        	}); // end of JSON
+        }// end of initMap
+        function buildMap(map,geocoder, markers){
+            // Allow the User to Click and Center the Map
+            // Create the DIV to hold the control and call the CenterControl()
+	        // constructor passing in this DIV.
+	        var centerControlDiv = document.createElement('div');
+	        var centerControl = new CenterControl(centerControlDiv, map);
+
+	        centerControlDiv.index = 1;
+	        map.controls[google.maps.ControlPosition.TOP_CENTER].push(centerControlDiv);
+            // Place Markers for each Point of Interest in data/points.txt
+        	var i = 0;
+        	while (i < markers.length) {
+        		var point = markers[i];
+        		var rating = point[3];
+        		console.log(point);
+        		var marker = new google.maps.Marker({
+        			title: point[0],
+        			position: {lat: point[1], lng:point[2]},
+        			map: map
+        		});
+        		google.maps.event.addListener(marker,"click",function() {
+        			var infoWindow = new google.maps.InfoWindow;
+        			reverseGeocode(geocoder,map,infoWindow,this,rating);
+        		});
+        		i++;
+        	} // end of while-loop
+        } // end of buildMap
+
+        function reverseGeocode(geocoder,map,infoWindow,marker,rating) {
+                var address;
+                geocoder.geocode({
+                        "location" : marker.position
+                }, function (results,status) {
+                        if (status == "OK") {
+                        	//TODO: Implement "star" ratings in infowindow, incorperate global infoWindow
+                                infoWindow.setContent("<div><h2>" + marker.title + "<\/h2><h3>" + results[0].formatted_address + "<\/h3> <\/div>" + "<p>" + "Rating: " + rating + "/5.0"+"<\/p>");
+                            infoWindow.open(map, marker);
+                        }
+                }); // end of geocoder.geocode
+        } // end of reverseGeocode
+    </script>
+  </body>
+</html>

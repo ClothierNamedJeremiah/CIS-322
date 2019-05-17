@@ -1,0 +1,17 @@
+p.calendar_title {
+	text-indent: 10px;
+}
+.busy_column {
+    float: left;
+    width: 33.33%;
+    padding: 10px;
+    background-color: FFD4FC;
+    border:1px solid black;
+}
+.free_column {
+    float: left;
+    width: 33.33%;
+    padding: 10px;
+    background-color: C9FAC5;
+    border:1px solid black;
+}

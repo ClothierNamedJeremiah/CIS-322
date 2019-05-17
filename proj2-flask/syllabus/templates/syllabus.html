@@ -1,0 +1,33 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html> <head>
+<title>Course Schedule</title>
+  <link rel="stylesheet" type="text/css" href="static/css/syllabus.css"
+   media="screen"/>
+  <link rel="stylesheet" type="text/css" href="static/css/syllabus-print.css"
+   media="print"/>
+
+</head>
+
+<body>
+<h1>Schedule</h1>
+
+<table class="class-schedule">
+  {% for entry in g.schedule %}
+  {% if entry.highlighted %}
+  <tr class="highlighted">
+  {% else %}
+    {% if loop.index is divisibleby 2 %}
+    <tr class="even">
+    {% else %}
+    <tr class="odd">
+    {% endif %}
+  {% endif %}
+  <td class="week">{{ entry.week }}</td>
+  <td class="topic">{{ entry.topic }}</td>
+  <td class="project">{{ entry.project}}</td>
+  </tr>
+  {% endfor %}
+
+
+
+</body> </html>

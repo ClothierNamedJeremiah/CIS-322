@@ -1,0 +1,11 @@
+# Name, Lat, Lng, Rating (upto 5.0)
+Red Rooster Barber Shop,44.045262,-123.079163,4.6
+Dudley's Kampus Barber Shop,44.045643,-123.079441,4.2
+The Lather Shoppe,44.046210,-123.079935,5.0
+Eugene JA Chinese Hair Salon,44.045676,-123.083169,5.0
+Hair Today,44.045683,-123.084326,5.0
+Checkmate Hair Salon,44.048912,-123.086255,5.0
+The Barber Shop,44.045333,-123.090856,4.4
+Amadeus Salon,44.045850,-123.090914, 5.0
+Rom's Haircraft,44.041988,-123.091047,4.5
+Modern Betty Salon,44.049556,-123.090644,4.4

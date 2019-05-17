@@ -1,0 +1,19 @@
+div {
+    padding-top: 10px;
+    padding-right: 25px;
+    padding-bottom: 5px;
+    padding-left: 25px;
+}
+.memo_field {
+    width: 345px;
+    height: 245px;
+}
+#buttons
+{
+    width:100%;
+    text-align: left;
+}
+.btn
+{
+    display: inline-block;
+}

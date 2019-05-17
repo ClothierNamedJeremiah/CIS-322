@@ -1,0 +1,98 @@
+#
+#  Sample schedule for CIS 322, Winter 2016. 
+#  You can use this as a model to create a schedule
+#  for another class, and use the configuration file 
+# to reference it.   
+#
+#
+
+begin: 09/25/2017
+
+week: 1
+
+topic: Course introduction.  Basic web (http) architecture.  Managing
+	a code base with distributed version control.  Basic Unix.
+	Getting unstuck. Read CIS 322 style guide (~4 pages); a git
+	tutorial  (~8 pages selected from tutorials), HTTP protocol
+	(~3 pages).   Depending on prior experience, you may also need
+	to read introductions to Python and/or Unix.
+	
+project:  Implement a very simple web server entirely in Python.
+(Also complete a "project 0" to practice the logistics of git
+repositories and turning in configuration files.) 
+
+week: 2
+
+topic: 
+  Flask (web “micro-framework” for Python), Javascript (client side
+  programming language)	 Read selectively from Flask documentation (~14 pages).   
+
+project:  Implement a web application
+  (syllabus display) using the Flask micro-framework for Python web
+  servers. 
+
+week: 3
+topic: 
+Ajax. Introduction to testing and test automation.	  Selectively
+read “A re-introduction to  to Javascript” (~10 pages of 27).   A
+partial test suite will be provided; you will add to it.   Read Nose
+summary documentation (~1 page).
+
+project: 
+Implement an anagram game as an interactive web in the
+“Ajax” style.  Javascript embedded in the web page will asynchronously
+interact with a web service in Flask.
+
+week: 4
+topic: 
+  Testing.  Data driven (table-driven) programs.  Refining
+  specifications. 	Read RUSA
+  brevet calculator, rules, RUSA rules for riders (~10 pages) 
+
+project: 
+   Implement a brevet time limit calculator in the Ajax
+  style to replace the  one currently provided by Randonneurs USA.  A
+  major part of this project is refining your understanding of the
+  rules, testing your understanding and implementation. 
+
+
+week: 5
+
+topic: 
+Midterm.  JavaScript APIs.
+
+project:  Implement a simple mapping application using the Leaflet
+mapping API and a geocoding API.  Read tutorial and reference material
+for Leaflet (10-15 pages) and reverse geocoding (depends on which
+geocoder you choose).
+
+week: 6
+topic: NoSQL database. User experience design and usability.
+project:   MongoDB project (“Memos of Mongo”).  Read selectively from
+MongoDB documentation (~10 pages).   This project is small, but you
+must experiment extensively with MongoDB before writing it. You will
+not succeed if you start with the actual project.  
+
+
+week: 7
+topic:   Security. Reading APIs. UML.
+project:  List busy times from selected Google calendars.   Read
+Google API documentation.  10-15 pages, scattered.  
+
+week: 8
+topic: 	Persistent state management.
+project:  Calculate free
+times by excluding busy times from calendars.  
+Read more Google APIs as needed.  (Light week for reading, heavy week
+for programming and testing.)   
+
+week: 9
+topic:  More on user experience and usability.
+project:    Begin final integration of MeetMe application combining
+functionality from projects 6, 7, and 8. Produce and critique mock-ups
+(“wire frames”) for MeetMe.
+
+week: 10
+topic:  	Wrap-up; review designs and implementations
+project:  Finish MeetMe project. 
+

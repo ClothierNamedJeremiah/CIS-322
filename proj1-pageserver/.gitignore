@@ -1,0 +1,8 @@
+# Files we don't keep under git revision control 
+#
+__pycache__ 
+.DS_STORE
+*.pyc    
+solved.py
+,*
+credentials.ini

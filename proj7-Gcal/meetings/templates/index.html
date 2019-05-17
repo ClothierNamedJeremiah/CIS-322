@@ -1,0 +1,124 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html lang="en"> <head>
+<title>Appointments</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" type="text/css"
+     href="//cdn.jsdelivr.net/bootstrap/latest/css/bootstrap.css"
+/>
+
+
+<link rel="stylesheet" type="text/css"
+    href="/static/css/busy.css"
+/>
+
+<!-- jquery from a content distribution network; probably cached -->
+<script type="text/javascript"
+     src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js">
+</script>
+
+<!-- Ideally the rest of our javascript dependencies would be
+     bundled and minified with 'browserify', but I've found that
+     it difficult to handle browserify dependencies for class
+     projects.  So, we'll pick up moment and a date range picker
+     from CDNs instead.
+-->
+
+<script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+
+<script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
+
+<!-- Our own style sheet -->
+<link rel="stylesheet" href="/static/css/index.css" />
+<link rel="shortcut icon" href="#" />
+
+</head>
+
+<body>
+<div class="container">
+
+<h1>Busy times</h1>
+
+<!--
+  -- If there are any warnings or other messages from a prior action,
+  -- they appear above the rest of the content, just until the next 
+  -- action.
+  -->
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
+<h2>Date &amp; Time range</h2>
+<form action="/setrange" method="post">
+  <input type="text" name="daterange" size="12"
+    {% if session.daterange is defined %}
+         value="{{session.daterange}}"
+    {% endif %}
+     class="pull-down"
+     style="background: #fff; cursor: pointer; padding: 5px 10px;
+     border: 1px solid #ccc; width: 12em" >
+  <script type="text/javascript">
+  $(function() {
+  $('input[name="daterange"]').daterangepicker(
+    {    ranges: {
+           'Today': [moment(), moment()],
+           'Tomorrow':[moment().add(1, 'days'),
+                       moment().add(1, 'days')], 
+           'This week':[moment(), moment().endOf('week')],
+           'Next week':[moment().add(7, 'days').startOf('week'),
+                        moment().add(7, 'days').endOf('week')],
+           'This month':[moment(), moment().endOf('month')],
+           'Within two weeks':[moment(),moment().add(15, 'days')]
+        }}
+       );
+    });
+  </script>
+    <input id="time" name="opentime" type="time" value="08:00"/> to
+    <input id="time" name="closetime" type="time" value="17:00"/>
+  <br /><input type="submit" value="Choose" />
+</form>
+
+    <!--
+    Show the calendar list (if we have it).  This will need to be turned into
+    a form from which calendars can be picked. Up to three entries are
+    shown in each row (but the order is across then down; I would
+    prefer down then across).
+    -->
+{% if g.calendars is defined  %}
+  <form>
+  {% for cal in g.calendars if cal.selected %}
+    <div class="row">
+      <input type="checkbox" value = "{{cal.summary}}" name="check{{loop.index}}">
+      <p class="calendar_title" name="calendar_title">{{cal.summary}}</p>
+    </div>
+  {% endfor %}
+  <button type = "submit" formmethod="post" formaction="{{url_for('setcalendars')}}">Choose Calendar</button>
+  </form>
+{% endif %}
+
+{% if g.timeblocks is defined %}
+  <h4> Busy Times </h4>
+  {% for block in g.timeblocks %}
+    <div class="row">
+      <div class="column">
+        <p class="info"><b>Event:</b> {{block[0]}}</p>
+      </div>
+      <div class="column">
+        <p class="info"><b>From:</b> {{block[1]|humanize_date}} {{block[1]|humanize_time}}</p>
+      </div>
+      <div class="column">
+        <p class="info"><b>To:</b> {{block[2]|humanize_date}} {{block[2]|humanize_time}}</p>
+      </div>
+    </div>
+  {% endfor %}
+{% endif %}
+  </div>  <!-- container (for bootstrap) -->
+  </body> </html>

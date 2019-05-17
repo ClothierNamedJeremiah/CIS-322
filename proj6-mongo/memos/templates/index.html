@@ -1,0 +1,67 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html> <head>
+<title>Memos</title>
+
+  <!-- 'viewport' is used by bootstrap to respond to device size -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Javascript:  JQuery from a content distribution network (CDN) -->
+  <script
+     src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js">
+  </script>
+
+  <!-- Bootstrap includes javascript and css  (must follow jquery) -->
+  <link rel="stylesheet"
+   href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+   <script
+    src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js">
+</script>
+
+   <!-- Our own style sheet -->
+   <link rel="stylesheet" href="/static/css/memos.css" />
+
+
+</head>
+<body>
+<div class="container">
+
+<!-- Flashed messages before content -->
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
+<h1>Memos</h1>
+<form method=POST action="{{ url_for('delete') }}">
+  <input type ="submit" value="delete selected" style="float:right;margin-right:5%">
+    <button type ="submit" formmethod= "get" formaction="{{ url_for('create') }}" style="float:right;margin-right:5%">add memo</button>
+  {% if g.memos %}
+      {% for memo in g.memos %}
+        <div class="memo">
+        <div class="row">
+        <div id="memo_header">
+          <input type="checkbox" value={{memo.date}} name="check{{ loop.index }}">
+          <p style = "margin-left:5%;font-size: 19;">{{ memo.date | humanize }}</p>
+        </div>
+        <div id="outer" style="margin: 0 auto;">
+          <div class="col-md-10" id="inner" style="float:left; outline:#000000 solid thin;margin-left:5%; min-width: 400px; max-width:400px;word-wrap:break-word;">
+            {{ memo.text }}
+          </div>
+          <br></br>
+        </div>
+        </div> <!-- row -->
+        </div> <!-- memo -->
+    {% endfor %}
+  {% else %}
+    <p>No memos for you. </p>
+  {% endif %}
+</form> 
+
+</div> <!-- container -->
+</body>
+</html>
